@@ -1,0 +1,19 @@
+<section class="flex h-full w-full flex-col items-center bg-black">
+
+  <div class="flex flex-1 flex-col items-center justify-start mt-16 gap-4">
+    <div class="h-48 w-48 border border-white/40"></div>
+    <h1 class="mt-4 text-2xl font-bold tracking-wide text-white">Biblioteca Alfonso Reyes</h1>
+  </div>
+
+  <div class="mb-16 flex w-full max-w-sm flex-col gap-8 px-6">
+    <div class="flex items-center justify-between gap-6">
+      <span class="text-sm text-neutral-300">Crear nueva lista</span>
+      <app-button label="CREAR" (click)="onCreate()" />
+    </div>
+    <div class="flex items-center justify-between gap-6">
+      <span class="text-sm text-neutral-300">Importar lista</span>
+      <app-button label="IMPORTAR" colorClass="border-neutral-500 text-neutral-500 hover:bg-neutral-500/20" (click)="onImport()" />
+    </div>
+  </div>
+
+</section>
