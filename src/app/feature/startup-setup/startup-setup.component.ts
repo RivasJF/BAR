@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ButtonComponent } from './component/button/button.component';
+import { closeDb, execute} from '../../core/database/sqlite.service';
 
 @Component({
 	selector: 'startup-setup',
@@ -8,8 +9,11 @@ import { ButtonComponent } from './component/button/button.component';
 })
 export class StartupSetupComponent {
 
-  onCreate(): void {
+  async onCreate() {
+    await execute("SELECT ? + ?;", [1,1])
 	}
 
-	onImport(): void {}
+  async onImport() {
+    await closeDb()
+	}
 }
