@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonComponent } from './component/button/button.component';
-import { closeDb, execute} from '../../core/database/sqlite.service';
+import { loadNewDatabase } from '../../core/database/sqlite.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'startup-setup',
@@ -8,12 +9,13 @@ import { closeDb, execute} from '../../core/database/sqlite.service';
 	templateUrl: './startup-setup.component.html'
 })
 export class StartupSetupComponent {
+  private router = inject(Router);
 
   async onCreate() {
-    await execute("SELECT ? + ?;", [1,1])
+    await loadNewDatabase();
+    this.router.navigate(['/books/panel'], { replaceUrl: true })
 	}
 
   async onImport() {
-    await closeDb()
 	}
 }

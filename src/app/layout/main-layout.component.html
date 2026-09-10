@@ -1,0 +1,26 @@
+<header class="h-10 flex items-center justify-center gap-2 px-4 ">
+  <span class="text-lg">📚</span>
+  <span class="font-bold text-sm text-amber-500">Biblioteca Alfonso Reyes</span>
+</header>
+<hr class="w-[95%] mx-auto border-white my-0">
+
+<div class="relative flex h-[calc(100vh-2.5rem)]">
+  <aside class="absolute top-0 left-0 h-full z-10 group w-12 hover:w-48 transition-all duration-200 border-r border-white p-2 flex flex-col gap-1 overflow-hidden bg-[#222222]">
+    <a routerLink="/books/panel" class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 text-sm whitespace-nowrap">
+      <span class="text-base">🏠</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity">Panel</span>
+    </a>
+    <a routerLink="/books/register" class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 text-sm whitespace-nowrap opacity-50">
+      <span class="text-base">✅</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity">Registrar</span>
+    </a>
+    <a class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 text-sm whitespace-nowrap opacity-50">
+      <span class="text-base">⬆</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity">Exportar</span>
+    </a>
+  </aside>
+
+  <main class="flex-1 w-full overflow-auto pt-4 pr-4 pb-4 pl-16">
+    <router-outlet />
+  </main>
+</div>

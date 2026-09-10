@@ -22,6 +22,13 @@ async function getDb(): Promise<Database> {
 }
 
 /**
+ * Load a new database (create new list)
+ */
+export async function loadNewDatabase() {
+  await getDb();
+}
+
+/**
  * Ejecuta INSERT / UPDATE / DELETE.
  */
 export async function execute(query: string, params: unknown[] = []) {
