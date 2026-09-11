@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { SearchComponent } from './components/search.component';
 
 @Component({
-	selector: 'panel',
-	template: `<h1  class="flex text-amber-200 justify-center">Hello</h1>`
+  imports: [SearchComponent],
+  selector: 'panel',
+	templateUrl: './panel.component.html',
 })
 export class Panel {
 }

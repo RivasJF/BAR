@@ -1,0 +1,39 @@
+
+
+<!-- Barra de Búsqueda Central -->
+<div class="flex-1 flex items-center bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-1.5 focus-within:border-zinc-500 transition-colors">
+
+    <!-- Selector / Dropdown "Titulo:" -->
+    <div class="relative flex items-center pr-2 border-r border-zinc-700">
+        <select class="bg-transparent text-sm text-gray-300 focus:outline-none cursor-pointer pr-4 appearance-none font-medium">
+            <option class="bg-zinc-900 text-white">Titulo:</option>
+            <option class="bg-zinc-900 text-white">Opción 1</option>
+            <option class="bg-zinc-900 text-white">Opción 2</option>
+        </select>
+        <!-- Flecha desplegable -->
+        <svg class="w-3.5 h-3.5 text-gray-400 absolute right-0 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+
+    <!-- Campo de entrada de texto -->
+    <input
+        type="text"
+        placeholder="Buscar..."
+        class="flex-1 bg-transparent px-3 py-1 text-sm text-white placeholder-gray-500 focus:outline-none"
+    >
+
+    <!-- Ícono de Lupa (Búsqueda) -->
+    <button class="p-1 text-gray-400 hover:text-white transition-colors" title="Buscar">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+    </button>
+</div>
+
+<!-- Botón Derecha (Ajustes / Filtro / Acción) -->
+<button class="p-2 border border-zinc-700 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-gray-300 transition-colors flex items-center justify-center shrink-0" title="Opciones">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+    </svg>
+</button>
