@@ -1,3 +1,5 @@
+import { Author } from "../author/author.model";
+
 export class Book {
 
   private constructor(
@@ -10,6 +12,7 @@ export class Book {
     public readonly volume: number | null,
     public readonly title: string | null,
     public readonly titleNormalized: string | null,
+    public readonly authors: Author[] | null,
     public readonly observations: string | null,
     public readonly createdAt: Date,
   ) { }
@@ -24,6 +27,7 @@ export class Book {
     volume: number,
     title: string,
     titleNormalized: string,
+    authors: Author[] | null,
     observations: string,
     createdAt: Date,
   ): Book {
@@ -37,6 +41,7 @@ export class Book {
       volume,
       title,
       titleNormalized,
+      authors,
       observations,
       createdAt
     );
