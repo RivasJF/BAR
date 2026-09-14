@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
+import { RegisterFormComponent } from './component/register-form/register-form.component';
+import { RegisterHistorialComponent } from './component/register-historial/register-historial.component';
 
 @Component({
-	selector: 'register',
-	template: `<h1 class="flex text-amber-200 justify-center">Register</h1>`
+  imports: [RegisterFormComponent, RegisterHistorialComponent],
+  selector: 'register',
+  templateUrl: './register.component.html',
 })
 export class Register {
+
 }

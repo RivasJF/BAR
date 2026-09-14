@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ButtonComponent } from './component/button/button.component';
-import { loadNewDatabase } from '../../core/database/sqlite.service';
 import { Router } from '@angular/router';
+import { DATABASE_CLIENT, DatabaseClient } from '../../core/database/databaseClient.service';
 
 @Component({
 	selector: 'startup-setup',
@@ -9,10 +9,11 @@ import { Router } from '@angular/router';
 	templateUrl: './startup-setup.component.html'
 })
 export class StartupSetupComponent {
+  private respository = inject<DatabaseClient>(DATABASE_CLIENT);
   private router = inject(Router);
 
   async onCreate() {
-    await loadNewDatabase();
+    this.respository.loadNewDatabase();
     this.router.navigate(['/books/panel'], { replaceUrl: true })
 	}
 
