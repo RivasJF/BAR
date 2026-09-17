@@ -1,5 +1,5 @@
 import { Author } from "../model/author/author.model";
-import { AuthorModel } from "../repostory/author.model-database";
+import { AuthorModel } from "../model/author/author.model-database";
 
 export class AuthorMapper {
   static toEntity(authorModel: AuthorModel): Author {

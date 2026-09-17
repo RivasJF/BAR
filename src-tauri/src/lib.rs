@@ -10,7 +10,7 @@ pub fn run() {
             sql: "CREATE TABLE IF NOT EXISTS autores (
                 id  INTEGER PRIMARY KEY AUTOINCREMENT,
                 uuid  TEXT NOT NULL UNIQUE CHECK (length(uuid) = 36),
-                nombre TEXT NOT NULL CHECK (length(nombre) <= 150),
+                nombre TEXT NOT NULL UNIQUE CHECK (length(nombre) <= 150),
                 nombre_normalizado TEXT NOT NULL CHECK (length(nombre_normalizado) <= 150)
             );
 

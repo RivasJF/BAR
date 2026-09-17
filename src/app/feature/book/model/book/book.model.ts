@@ -1,13 +1,14 @@
 import { Author } from "../author/author.model";
+import { DeweyCategory } from "../deweyCategory.model";
 
 export class Book {
 
   private constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly publicId: string,
     public readonly cardNumber: number | null,
     public readonly callNumber: string | null,
-    public readonly deweyCategory: DeweyCategory,
+    public readonly deweyCategory: DeweyCategory | null,
     public readonly copies: number,
     public readonly volume: number | null,
     public readonly title: string | null,
@@ -18,17 +19,17 @@ export class Book {
   ) { }
 
   static create(
-    id: string,
+    id: number,
     publicId: string,
-    cardNumber: number,
-    callNumber: string,
+    cardNumber: number | null,
+    callNumber: string | null,
     deweyCategory: DeweyCategory,
     copies: number,
-    volume: number,
-    title: string,
-    titleNormalized: string,
+    volume: number | null,
+    title: string | null,
+    titleNormalized: string | null,
     authors: Author[] | null,
-    observations: string,
+    observations: string | null,
     createdAt: Date,
   ): Book {
     return new Book(

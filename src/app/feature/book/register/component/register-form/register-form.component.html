@@ -1,52 +1,124 @@
-<div class="grid grid-cols-1 gap-x-16 gap-y-6 md:grid-cols-2">
+<form class="grid grid-cols-1 gap-x-16 gap-y-6 md:grid-cols-2" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
   <label class="flex flex-col gap-2 text-sm text-zinc-200">
-    <span>Número de Tarjeta</span>
-    <input type="text" class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+    <span
+        htmlFor="cardNumber"
+    >Número de Tarjeta</span>
+    <input
+        id="cardNumber"
+        formControlName="cardNumber"
+        type="number"
+        class="no-spinner h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
   </label>
 
   <label class="flex flex-col gap-2 text-sm text-zinc-200">
-    <span>Título</span>
-    <input type="text" class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+    <span
+        htmlFor="title"
+    >Título</span>
+    <input
+        id="title"
+        formControlName="title"
+        type="text"
+        class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
   </label>
 
   <label class="flex flex-col gap-2 text-sm text-zinc-200">
-    <span>Signatura Topográfica</span>
-    <input type="text" class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+    <span
+        htmlFor="call_number"
+    >Signatura Topográfica</span>
+    <input
+        id="call_number"
+        formControlName="callNumber"
+        type="text"
+        class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
   </label>
 
   <label class="flex flex-col gap-2 text-sm text-zinc-200">
     <span>Autor</span>
-    <input type="text" class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
-    <span class="self-center text-xs text-zinc-400">◉</span>
+    @for (authorControl of author.controls; track $index) {
+      <div formArrayName="author" class="flex items-center gap-2">
+        <input
+            type="text"
+            [formControlName]="$index"
+            [value]="authorControl.value"
+            class="h-11 w-full rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+        <span
+            (click)="removeAuthor($index)"
+            [class.invisible]="author.controls.length === 1"
+            class="cursor-pointer text-xs text-zinc-400">REMOVE</span>
+      </div>
+    }
+    <span
+        (click)="addAuthor()"
+        [class.invisible]="author.controls.length === MAX_AUTHORS"
+        class="material-symbols-outlined self-center text-xs text-zinc-400">add</span>
   </label>
 
   <label class="flex flex-col gap-2 text-sm text-zinc-200 md:max-w-xs">
     <span>Categoría</span>
-    <select class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
-      <option>800-Literatura</option>
+    <select
+        formControlName="deweyCategory"
+        class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-black outline-none">
+        <option [ngValue]="null" disabled>---</option>
+        @for(category of categories; track category) {
+            <option
+                [ngValue]="category.code">{{category.code+'-'+category.name }}</option>
+        }
     </select>
   </label>
 
   <label class="flex flex-col gap-2 text-sm text-zinc-200">
-    <span>Observaciones</span>
-    <textarea rows="2" class="resize-none rounded-md border border-zinc-500 bg-zinc-900 px-3 py-2 text-white outline-none"></textarea>
+    <span
+        htmlFor="observations"
+    >Observaciones</span>
+    <textarea
+        id="observations"
+        formControlName="observations"
+        rows="2"
+        class="resize-none rounded-md border border-zinc-500 bg-zinc-900 px-3 py-2 text-white outline-none"></textarea>
   </label>
 
   <div class="flex flex-col gap-2 text-sm text-zinc-200 sm:flex-row sm:gap-10">
     <label class="flex flex-col gap-2">
-      <span>Edición</span>
-      <input type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+      <span
+            htmlFor="volume"
+      >Volumen</span>
+      <input
+          id="volume"
+          formControlName="volume"
+          placeholder="---"
+          type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
     </label>
 
     <label class="flex flex-col gap-2">
-      <span>Ejemplares</span>
-      <input type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+      <span
+          htmlFor="copies"
+      >Ejemplares</span>
+      <input
+         id="copies"
+         formControlName="copies"
+          type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
     </label>
   </div>
 
-  <div class="flex items-end justify-start md:justify-end">
-    <button type="button" class="h-11 w-full rounded-md border border-zinc-400 bg-zinc-800 px-8 text-sm text-zinc-100 sm:w-auto">
-      Agregar
+  <div class="flex flex-col gap-4 md:justify-end md:items-end">
+    @if (error()) {
+      <p class="w-full rounded-md border border-red-500 bg-red-900/40 px-3 py-2 text-sm text-red-200 md:w-auto">
+        {{ error() }}
+      </p>
+    }
+
+    @if (success()) {
+      <p class="w-full rounded-md border border-emerald-500 bg-emerald-900/40 px-3 py-2 text-sm text-emerald-200 md:w-auto">
+        Libro registrado correctamente.
+      </p>
+    }
+
+    <button
+        [disabled]="buttonDisabled() || loading()"
+        type="submit"
+        class="h-11 w-full rounded-md border border-zinc-400 bg-zinc-800 px-8 text-sm text-zinc-100 sm:w-auto">
+      {{ loading() ? 'Agregando...' : 'Agregar' }}
     </button>
   </div>
-</div>
+</form>

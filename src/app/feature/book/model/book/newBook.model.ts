@@ -1,3 +1,7 @@
+import { NewAuthor } from "../author/newAuthor.model";
+import { DomainError } from "../../../../core/error/domain.error";
+import { DeweyCategory } from "../deweyCategory.model";
+
 const INITIAL_NUMBER_COPIES:number = 1;
 
 export class NewBook {
@@ -10,6 +14,7 @@ export class NewBook {
     public readonly volume: number | null,
     public readonly title: string | null,
     public readonly titleNormalized: string | null,
+    public readonly authors: NewAuthor[],
     public readonly observations: string | null,
   ) { }
 
@@ -21,18 +26,24 @@ export class NewBook {
     volume: number | null,
     title: string | null,
     observations: string | null,
+    authors: string[] = [],
   ) {
     if (callNumber) callNumber = callNumber.trim();
     if (title) title = title.trim();
     if (observations) observations = observations.trim();
     const publicId = crypto.randomUUID();
     if (!callNumber && !cardNumber) {
-      throw new Error('Either callNumber or cardNumber must be provided.');
+      throw new DomainError('Debe proporcionar el número de tarjeta o la signatura topográfica.');
     }
     let titleNormalized = null;
     if (title) {
       titleNormalized = title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
+    const newAuthors = authors
+      .map((name) => {
+        return name ? NewAuthor.create(name) : null;
+      })
+      .filter((author): author is NewAuthor => author !== null);
     return new NewBook(
       publicId,
       cardNumber,
@@ -42,6 +53,7 @@ export class NewBook {
       volume,
       title,
       titleNormalized,
+      newAuthors,
       observations,
     );
   }

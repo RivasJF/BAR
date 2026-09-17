@@ -1,3 +1,5 @@
+import { DomainError } from "../../../../core/error/domain.error";
+
 export class NewAuthor {
   private constructor(
     public readonly publicId: string,
@@ -10,6 +12,9 @@ export class NewAuthor {
   ): NewAuthor {
     const publicId = crypto.randomUUID()
     name = name.trim()
+    if (name.length === 0 || name.length > 255) {
+      throw new DomainError('Nombre de autor inválido. Debe tener entre 1 y 255 caracteres.');
+    }
     return new NewAuthor(publicId, name, name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
   }
 }

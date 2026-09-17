@@ -1,7 +1,35 @@
 import { inject, Injectable } from '@angular/core';
-import { AUTHOR_REPOSITORY, AuthorRepository } from '../model/author/autor.repository';
+import { Book } from '../model/book/book.model';
+import { BOOK_REPOSITORY, BookRepository } from '../model/book/book.repository';
+import { NewBook } from '../model/book/newBook.model';
+import { DeweyCategory } from '../model/deweyCategory.model';
+
+export interface RegisterBookInput {
+  cardNumber: number | null;
+  callNumber: string | null;
+  deweyCategory: DeweyCategory;
+  copies: number;
+  volume: number | null;
+  title: string | null;
+  observations: string | null;
+  authors: string[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class RegisterService {
-  private authorRespository = inject<AuthorRepository>(AUTHOR_REPOSITORY);
+  private bookRepository = inject<BookRepository>(BOOK_REPOSITORY);
+
+  async registerBook(input: RegisterBookInput): Promise<Book> {
+    const newBook = NewBook.create(
+      input.cardNumber,
+      input.callNumber,
+      input.deweyCategory,
+      input.copies,
+      input.volume,
+      input.title,
+      input.observations,
+      input.authors,
+    );
+    return this.bookRepository.save(newBook);
+  }
 }

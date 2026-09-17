@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 @import 'tailwindcss';
+
 
 html,
 body,
@@ -19,4 +20,14 @@ body{
   margin: 0;
     background-color: #222222;
     color: aliceblue;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
