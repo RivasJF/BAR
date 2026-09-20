@@ -1,4 +1,5 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, DestroyRef, inject, signal } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
   FormArray,
   FormBuilder,
@@ -17,10 +18,13 @@ import { DomainError, PersistenceError } from "../../../../../core/error/domain.
 export class RegisterFormComponent {
   private formBuilder = inject(FormBuilder);
   private registerService = inject(RegisterService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
   readonly success = signal<boolean>(false);
+
+  private successTimer: ReturnType<typeof setTimeout> | null = null;
 
   categories = DEWEY_CATEGORIES;
   readonly MAX_AUTHORS = 3;
@@ -28,13 +32,23 @@ export class RegisterFormComponent {
   registerForm = this.formBuilder.group({
     cardNumber: [null, [Validators.pattern(/^\d+$/)]],
     callNumber: [null, [Validators.pattern(/^[A-Za-z0-9\s]+$/)]],
-    deweyCategory: [null, [Validators.required]],
+    deweyCategory: [null, []],
     copies: [1, [Validators.required, Validators.min(1)]],
     volume: [null, [Validators.min(1)]],
-    title: [null, [Validators.required]],
+    title: [null, []],
     author: this.formBuilder.array([this.formBuilder.control("")]),
     observations: [null],
   });
+
+  constructor() {
+    this.registerForm.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.success.set(false));
+
+    this.destroyRef.onDestroy(() => {
+      if (this.successTimer) clearTimeout(this.successTimer);
+    });
+  }
 
   async onSubmit() {
     this.loading.set(true);
@@ -53,9 +67,10 @@ export class RegisterFormComponent {
         authors: this.author.value as string[],
       };
 
-      await this.registerService.registerBook(input);
-      this.success.set(true);
+      console.log(input)
+      // await this.registerService.registerBook(input);
       this.resetForm();
+      this.showSuccess();
     } catch (error) {
       this.error.set(this.resolveErrorMessage(error));
     } finally {
@@ -67,6 +82,12 @@ export class RegisterFormComponent {
     this.registerForm.reset();
     this.author.clear();
     this.author.push(this.formBuilder.control(""));
+  }
+
+  private showSuccess() {
+    this.success.set(true);
+    if (this.successTimer) clearTimeout(this.successTimer);
+    this.successTimer = setTimeout(() => this.success.set(false), 3000);
   }
 
   private resolveErrorMessage(error: unknown): string {

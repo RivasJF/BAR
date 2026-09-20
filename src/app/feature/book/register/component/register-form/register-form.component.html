@@ -59,7 +59,7 @@
     <select
         formControlName="deweyCategory"
         class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-black outline-none">
-        <option [ngValue]="null" disabled>---</option>
+            <option [ngValue]="null" >---</option>
         @for(category of categories; track category) {
             <option
                 [ngValue]="category.code">{{category.code+'-'+category.name }}</option>
@@ -84,6 +84,7 @@
             htmlFor="volume"
       >Volumen</span>
       <input
+          min="1"
           id="volume"
           formControlName="volume"
           placeholder="---"
@@ -95,6 +96,7 @@
           htmlFor="copies"
       >Ejemplares</span>
       <input
+          min="1"
          id="copies"
          formControlName="copies"
           type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
@@ -117,7 +119,7 @@
     <button
         [disabled]="buttonDisabled() || loading()"
         type="submit"
-        class="h-11 w-full rounded-md border border-zinc-400 bg-zinc-800 px-8 text-sm text-zinc-100 sm:w-auto">
+        class="h-11 w-full cursor-pointer rounded-md border border-zinc-400 bg-zinc-800 px-8 text-sm text-zinc-100 disabled:cursor-not-allowed sm:w-auto">
       {{ loading() ? 'Agregando...' : 'Agregar' }}
     </button>
   </div>
