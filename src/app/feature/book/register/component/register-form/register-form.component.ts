@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   ReactiveFormsModule,
@@ -31,19 +32,35 @@ export class RegisterFormComponent {
 
   registerForm = this.formBuilder.group({
     cardNumber: [null, [Validators.pattern(/^\d+$/)]],
-    callNumber: [null, [Validators.pattern(/^[A-Za-z0-9\s]+$/)]],
-    deweyCategory: [null, []],
+    callNumber: [null, [Validators.pattern(/^[A-Za-z0-9\s]+$/), Validators.maxLength(100)]],
+    deweyCategory: [null],
     copies: [1, [Validators.required, Validators.min(1)]],
     volume: [null, [Validators.min(1)]],
-    title: [null, []],
-    author: this.formBuilder.array([this.formBuilder.control("")]),
-    observations: [null],
+    title: [null, [Validators.maxLength(300)]],
+    author: this.formBuilder.array([this.formBuilder.control("", Validators.maxLength(150))]),
+    observations: [null, [Validators.maxLength(250)]],
   });
 
   constructor() {
     this.registerForm.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.success.set(false));
+
+    this.volume.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value === '' || value === null) {
+          this.volume.setValue(null, { emitEvent: false });
+        }
+      });
+
+    this.copies.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value === null || value === undefined) {
+          this.copies.setValue(1, { emitEvent: false });
+        }
+      });
 
     this.destroyRef.onDestroy(() => {
       if (this.successTimer) clearTimeout(this.successTimer);
@@ -68,7 +85,7 @@ export class RegisterFormComponent {
       };
 
       console.log(input)
-      // await this.registerService.registerBook(input);
+      await this.registerService.registerBook(input);
       this.resetForm();
       this.showSuccess();
     } catch (error) {
@@ -79,9 +96,17 @@ export class RegisterFormComponent {
   }
 
   private resetForm() {
-    this.registerForm.reset();
+    this.registerForm.reset({
+      cardNumber: null,
+      callNumber: null,
+      deweyCategory: null,
+      copies: 1,
+      volume: null,
+      title: null,
+      observations: null,
+    });
     this.author.clear();
-    this.author.push(this.formBuilder.control(""));
+    this.author.push(this.formBuilder.control("", Validators.maxLength(150)));
   }
 
   private showSuccess() {
@@ -97,13 +122,23 @@ export class RegisterFormComponent {
     if (error instanceof DomainError) {
       return error.message;
     }
-    console.error(error);
     return 'Ocurrió un error inesperado al registrar el libro.';
+  }
+
+  validationMessage(control: AbstractControl | null): string | null {
+    if (!control || control.valid) return null;
+    const errors = control.errors;
+    if (!errors) return null;
+    if (errors['required']) return 'Este campo es obligatorio.';
+    if (errors['min']) return `El valor mínimo es ${errors['min']['min']}.`;
+    if (errors['maxlength']) return `Máximo ${errors['maxlength'].requiredLength} caracteres.`;
+    if (errors['pattern']) return 'Formato inválido.';
+    return 'Valor inválido.';
   }
 
   addAuthor() {
     if (this.author.length < this.MAX_AUTHORS) {
-      this.author.push(this.formBuilder.control(""));
+      this.author.push(this.formBuilder.control("", Validators.maxLength(150)));
     }
   }
 

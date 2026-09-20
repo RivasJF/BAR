@@ -19,7 +19,7 @@ export interface RegisterBookInput {
 export class RegisterService {
   private bookRepository = inject<BookRepository>(BOOK_REPOSITORY);
 
-  async registerBook(input: RegisterBookInput): Promise<Book> {
+  async registerBook(input: RegisterBookInput) {
     const newBook = NewBook.create(
       input.cardNumber,
       input.callNumber,
