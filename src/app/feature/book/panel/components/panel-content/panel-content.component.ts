@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { TargetBookComponent } from '../target-book/target-book.component';
 import { Book } from '../../../model/book/book.model';
 import { PanelService } from '../../panel.service';
@@ -11,6 +11,8 @@ import { DomainError, PersistenceError } from '../../../../../core/error/domain.
 })
 export class PanelContentComponent {
   private panelService = inject(PanelService);
+
+  @Output() bookSelected = new EventEmitter<Book>();
 
   readonly books = signal<Book[]>([]);
 
@@ -40,4 +42,9 @@ export class PanelContentComponent {
     }
     return 'Ocurrió un error inesperado buscar libros.';
   }
+
+  onTogglePopover(item: Book) {
+    this.bookSelected.emit(item);
+  }
+
 }

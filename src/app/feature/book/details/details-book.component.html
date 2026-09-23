@@ -1,0 +1,67 @@
+<article class="relative flex min-h-88 w-full max-w-5xl flex-col border-2 border-zinc-300 bg-[#222222] px-8 py-4 text-zinc-100 shadow-md sm:px-12">
+  <header class="flex justify-end">
+    <button
+      type="button"
+      class="text-4xl font-light leading-none text-red-400"
+      aria-label="Cerrar detalles"
+      (click)="onClose()"
+    >
+      ×
+    </button>
+  </header>
+
+  <dl class="grid flex-1 grid-cols-1 gap-x-12 gap-y-5 pt-2 text-sm sm:grid-cols-3">
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Número de Tarjeta</dt>
+      <dd class="text-base">{{ book.cardNumber ?? '--------' }}</dd>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Título</dt>
+      <dd class="text-base">{{ book.title || '--------' }}</dd>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Signatura Topográfica</dt>
+      <dd class="text-base">{{ book.callNumber || '--------' }}</dd>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Autor</dt>
+      @for(author of book.authors ?? []; track author.id) {
+        <dd class="text-base">{{ author.name }}</dd>
+      }@empty {
+        <dd class="text-base">--------</dd>
+      }
+    </div>
+
+    <div class="flex flex-col items-center gap-1">
+      <dt class="text-zinc-300">Categoría</dt>
+      <dd class="text-base">{{ book.deweyCategory ?? '--------' }}-Literatura</dd>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Observaciones</dt>
+      <dd class="text-base">{{ book.observations || '--------' }}</dd>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Edición</dt>
+      <dd class="text-base">{{ book.volume ?? '--------' }}</dd>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <dt class="text-zinc-300">Ejemplares</dt>
+      <dd class="text-base">{{ book.copies }}</dd>
+    </div>
+  </dl>
+
+  <footer class="flex justify-between gap-8 pt-6">
+    <button type="button" class="w-32 rounded-lg border border-red-400 px-5 py-2 text-sm text-red-400">
+      Eliminar
+    </button>
+    <button type="button" class="w-32 rounded-lg border border-sky-400 px-5 py-2 text-sm text-sky-300">
+      Editar
+    </button>
+  </footer>
+</article>
