@@ -1,6 +1,11 @@
-<div class="text-zinc-500 text-sm  w-full h-full  flex items-center justify-center">
-    @for(book of books; track book.getId()) {
+<div class="grid w-full h-full content-start justify-center gap-4 grid-cols-[repeat(auto-fill,12rem)] grid-auto-rows-[12rem]">
+    @for(book of books(); track book.getId()) {
 
-    <target-book-component class="mt-4" [cardNumber]="book.getCardNumber()" [title]="book.getTitle()" [authors]="book.getAuthors()" [callNumber]="book.getCallNumber()" />
+    <target-book-component
+        class="h-full w-full"
+        [cardNumber]="book.getCardNumber()"
+        [title]="book.getTitle()"
+        [authors]="book.getAuthors()"
+        [callNumber]="book.getCallNumber()" />
     }
 </div>

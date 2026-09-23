@@ -83,8 +83,6 @@ export class RegisterFormComponent {
         observations: this.registerForm.value.observations ?? null,
         authors: this.author.value as string[],
       };
-
-      console.log(input)
       await this.registerService.registerBook(input);
       this.resetForm();
       this.showSuccess();

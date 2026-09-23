@@ -1,13 +1,36 @@
-<article class="flex min-h-48 w-full max-w-sm flex-col rounded-[2rem] border border-zinc-300 bg-zinc-900/90 px-5 py-4 text-zinc-100 shadow-lg">
-  <div class="flex justify-end">
-    <span class="text-lg font-medium tracking-wide">{{cardNumber()}}</span>
+<article class="flex w-full h-full max-h-48 flex-col rounded-4xl border border-zinc-300 bg-zinc-900/90 px-5 py-4 text-zinc-100 shadow-lg">
+
+  @if (cardNumber(); as cardNo) {
+    <header class="flex justify-end">
+      <span class="rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1 text-[11px] font-medium tracking-widest text-zinc-300">
+        FICHA {{ cardNo }}
+      </span>
+    </header>
+  }
+
+  <div class="mt-4 flex flex-1 flex-col gap-3">
+    <h2 class="text-sm font-semibold uppercase leading-tight tracking-wide line-clamp-3">
+      {{ title() || 'Sin título' }}
+    </h2>
+
+    @if (authors(); as authorList) {
+      <ul class="flex flex-col gap-1.5">
+        @for (author of authorList; track author.getId()) {
+          <span class="flex items-center gap-2 text-sm font-medium  tracking-wide text-zinc-200">
+            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span>
+            <span class="truncate">{{ author.getName() }}</span>
+          </span>
+        }
+      </ul>
+    }
   </div>
 
-  <div class="mt-3 flex flex-col gap-3">
-    <h2 class="text-3xl font-medium uppercase tracking-wide">{{title()}}</h2>
-    @for(author of authors(); track author.getId()){
-            <p class="text-2xl font-medium uppercase tracking-wide">{{author.getName()}}</p>
-    }
-    <p class="text-xl font-medium">{{callNumber()}}</p>
-  </div>
+  @if (callNumber()) {
+    <footer class="mt-0.5 border-t border-zinc-700 pt-3">
+      <p class="text-sm text-zinc-400">
+        <span class="font-semibold tracking-wide text-zinc-300">Signatura:</span>
+        <span class="ml-1">{{ callNumber() }}</span>
+      </p>
+    </footer>
+  }
 </article>

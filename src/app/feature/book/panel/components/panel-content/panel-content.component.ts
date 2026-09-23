@@ -1,23 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TargetBookComponent } from '../target-book/target-book.component';
 import { Book } from '../../../model/book/book.model';
-import { Author } from '../../../model/author/author.model';
+import { PanelService } from '../../panel.service';
+import { DomainError, PersistenceError } from '../../../../../core/error/domain.error';
 
 @Component({
   imports: [TargetBookComponent],
-	selector: 'panel-content-component',
-	templateUrl: './panel-content.component.html'
+  selector: 'panel-content-component',
+  templateUrl: './panel-content.component.html'
 })
 export class PanelContentComponent {
+  private panelService = inject(PanelService);
 
-  private autrhors = [Author.create(2, "spublicId", "Jose", "jose"),
-  Author.create(3, "dasdasn", "ALE", "ale")
-  ];
+  readonly books = signal<Book[]>([]);
 
-  books = [
-    Book.create(1, "ss", 121, "100", 100, 1, null, "noc", "noc", [this.autrhors[0]], null, new Date()),
-    Book.create(2, "publicId", 321, "299", 100, 1, null, "title", "tittle", null, null, new Date()),
-    Book.create(3, "spublicId", 543, "234", 100, 1, null, "dsa", "das", [this.autrhors[0],this.autrhors[1]], "sin", new Date()),
+  readonly loading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
+  readonly success = signal<boolean>(false);
 
-  ]
+  async ngOnInit() {
+    this.loading.set(true);
+    this.error.set(null);
+    this.success.set(false);
+    try {
+      this.books.set(await this.panelService.fetchAllBooks());
+    } catch (error) {
+      this.error.set(this.resolveErrorMessage(error));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  private resolveErrorMessage(error: unknown): string {
+    if (error instanceof PersistenceError) {
+      console.error(error.cause);
+    }
+    if (error instanceof DomainError) {
+      return error.message;
+    }
+    return 'Ocurrió un error inesperado buscar libros.';
+  }
 }
