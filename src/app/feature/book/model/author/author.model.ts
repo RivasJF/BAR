@@ -14,4 +14,20 @@ export class Author {
   ): Author {
     return new Author(id, publicId, name, standardizedName)
   }
+
+  getId(): number {
+    return this.id;
+  }
+
+  getPublicId(): string {
+    return this.publicId;
+  }
+
+  getName(): string {
+    return this.name;
+  }
+
+  getStandardizedName(): string {
+    return this.standardizedName;
+  }
 }

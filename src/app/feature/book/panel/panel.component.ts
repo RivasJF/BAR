@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SearchComponent } from './components/search.component';
+import { PanelSearchComponent } from './components/panel-search/panel-search.component';
+import { PanelContentComponent } from './components/panel-content/panel-content.component';
 
 @Component({
-  imports: [SearchComponent],
+  imports: [PanelSearchComponent, PanelContentComponent],
   selector: 'panel',
 	templateUrl: './panel.component.html',
 })

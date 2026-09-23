@@ -1,0 +1,6 @@
+<div class="text-zinc-500 text-sm  w-full h-full  flex items-center justify-center">
+    @for(book of books; track book.getId()) {
+
+    <target-book-component class="mt-4" [cardNumber]="book.getCardNumber()" [title]="book.getTitle()" [authors]="book.getAuthors()" [callNumber]="book.getCallNumber()" />
+    }
+</div>

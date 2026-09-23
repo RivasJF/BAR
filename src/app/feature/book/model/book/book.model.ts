@@ -47,4 +47,52 @@ export class Book {
       createdAt
     );
   }
+
+  public getId(): number {
+    return this.id;
+  }
+
+  public getPublicId(): string {
+    return this.publicId;
+  }
+
+  public getCardNumber(): number | null {
+    return this.cardNumber;
+  }
+
+  public getCallNumber(): string | null {
+    return this.callNumber;
+  }
+
+  public getDeweyCategory(): DeweyCategory | null {
+    return this.deweyCategory;
+  }
+
+  public getCopies(): number {
+    return this.copies;
+  }
+
+  public getVolume(): number | null {
+    return this.volume;
+  }
+
+  public getTitle(): string | null {
+    return this.title;
+  }
+
+  public getTitleNormalized(): string | null {
+    return this.titleNormalized;
+  }
+
+  public getAuthors(): Author[] | null {
+    return this.authors;
+  }
+
+  public getObservations(): string | null {
+    return this.observations;
+  }
+
+  public getCreatedAt(): Date {
+    return this.createdAt;
+  }
 }
