@@ -1,13 +1,6 @@
 <article class="relative flex min-h-88 w-full max-w-5xl flex-col border-2 border-zinc-300 bg-[#222222] px-8 py-4 text-zinc-100 shadow-md sm:px-12">
   <header class="flex justify-end">
-      <button
-        type="button"
-        class="text-4xl font-light leading-none text-red-400"
-        aria-label="Cerrar edición"
-        (click)="onClose()"
-      >
-        ×
-      </button>
+      <close-button-component (close)="onClose()" />
   </header>
 
   <form class="grid grid-cols-1 gap-x-16 gap-y-6 md:grid-cols-2" [formGroup]="editForm" (ngSubmit)="onSubmit()">

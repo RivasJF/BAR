@@ -4,9 +4,10 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, ReactiveFormsModu
 import { DEWEY_CATEGORIES } from '../model/deweyCategory.model';
 import { DomainError, PersistenceError } from '../../../core/error/domain.error';
 import { EditBookService } from './edit-book.service';
+import { CloseButtonComponent } from '../component/close-button.component';
 
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,CloseButtonComponent],
 	selector: 'edit-book-component',
   templateUrl: './edit-book.component.html',
   host: {

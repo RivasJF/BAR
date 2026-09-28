@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+.dt-label {
+    @apply text-amber-300
+}
+.dd-text {
+    @apply text-base font-bold italic
+}
+
+.div-field {
+    @apply flex flex-col gap-1
+}

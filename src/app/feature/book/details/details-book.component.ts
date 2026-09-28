@@ -2,13 +2,16 @@ import { Component, EventEmitter, inject, Input, Output, signal } from '@angular
 import { Book } from '../model/book/book.model';
 import { DeleteBookService } from './delete.service';
 import { PersistenceError } from '../../../core/error/domain.error';
+import { CloseButtonComponent } from '../component/close-button.component';
 
 @Component({
+  imports: [CloseButtonComponent],
   selector: 'details-book-component',
   templateUrl: './details-book.component.html',
   host: {
     'class':'absolute inset-0 z-10 flex items-center justify-center bg-[#222222]/50 backdrop-blur-sm'
-  }
+  },
+  styleUrl: './details-book.style.css'
 })
 export class DetailsBookComponent {
   @Input({ required: true }) book!: Book;
