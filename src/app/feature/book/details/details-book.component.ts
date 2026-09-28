@@ -5,7 +5,10 @@ import { PersistenceError } from '../../../core/error/domain.error';
 
 @Component({
   selector: 'details-book-component',
-  templateUrl: './details-book.component.html'
+  templateUrl: './details-book.component.html',
+  host: {
+    'class':'absolute inset-0 z-10 flex items-center justify-center bg-[#222222]/50 backdrop-blur-sm'
+  }
 })
 export class DetailsBookComponent {
   @Input({ required: true }) book!: Book;

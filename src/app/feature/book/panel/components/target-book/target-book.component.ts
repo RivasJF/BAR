@@ -3,7 +3,10 @@ import { Author } from '../../../model/author/author.model';
 
 @Component({
 	selector: 'target-book-component',
-	templateUrl: './target-book.component.html'
+  templateUrl: './target-book.component.html',
+  host: {
+    'class': 'h-full w-full'
+	}
 })
 export class TargetBookComponent {
   @Output() togglePopover = new EventEmitter<void>();

@@ -8,7 +8,10 @@ import { EditBookService } from './edit-book.service';
 @Component({
   imports: [ReactiveFormsModule],
 	selector: 'edit-book-component',
-	templateUrl: './edit-book.component.html'
+  templateUrl: './edit-book.component.html',
+  host: {
+    'class': 'absolute inset-0 z-10 flex items-center justify-center bg-[#222222]/50 backdrop-blur-sm'
+	}
 })
 export class EditBookComponent implements OnInit {
   @Input({ required: true }) book!: Book;
