@@ -1,5 +1,5 @@
-import { Component, EventEmitter, input, Output } from '@angular/core';
-import { Author } from '../../../model/author/author.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Book } from '../../../model/book/book.model';
 
 @Component({
 	selector: 'target-book-component',
@@ -9,12 +9,8 @@ import { Author } from '../../../model/author/author.model';
 	}
 })
 export class TargetBookComponent {
+  @Input({ required: true }) book!: Book;
   @Output() togglePopover = new EventEmitter<void>();
-
-  cardNumber = input<number|null>(null);
-  title = input<string|null>('');
-  authors = input<Author[]|null>([]);
-  callNumber = input<string | null>('');
 
   onTogglePopover() {
     this.togglePopover.emit();

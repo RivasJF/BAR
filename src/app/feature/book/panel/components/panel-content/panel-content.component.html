@@ -1,10 +1,7 @@
 <div class="grid w-full h-full content-start justify-center gap-4 grid-cols-[repeat(auto-fill,12rem)] grid-auto-rows-[12rem]">
     @for(book of books(); track book.getId()) {
     <target-book-component
-        [cardNumber]="book.getCardNumber()"
-        [title]="book.getTitle()"
-        [authors]="book.getAuthors()"
-        [callNumber]="book.getCallNumber()"
+        [book]="book"
         (togglePopover)="onTogglePopover(book)"
     />
     }

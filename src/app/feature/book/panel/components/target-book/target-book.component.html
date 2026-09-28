@@ -1,41 +1,46 @@
-<article class="flex w-full h-full max-h-48 flex-col rounded-4xl border border-zinc-300 bg-zinc-900/90 px-4 py-3 text-zinc-100 shadow-lg">
-    <button
-      type="button"
-      class="flex h-full w-full flex-col items-start justify-between gap-2 text-left cursor-pointer"
-      (click)="onTogglePopover()"
-    >
-  @if (cardNumber(); as cardNo) {
-    <header class="flex justify-end">
-      <span class="rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1 text-[11px] font-medium tracking-widest text-zinc-300">
-        FICHA {{ cardNo }}
-      </span>
-    </header>
-  }
-
-  <div class="mt-4 flex flex-1 flex-col gap-3">
-    <h2 class="text-sm font-semibold uppercase leading-tight tracking-wide line-clamp-3">
-      {{ title() || 'Sin título' }}
-    </h2>
-
-    @if (authors(); as authorList) {
-      <ul class="flex flex-col gap-1.5">
-        @for (author of authorList; track author.getId()) {
-          <span class="flex items-center gap-2 text-sm font-medium  tracking-wide text-zinc-200">
-            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span>
-            <span class="truncate">{{ author.getName() }}</span>
-          </span>
-        }
-      </ul>
+<article
+  class="group flex w-full h-full min-h-[13rem] max-h-64 flex-col rounded-4xl border border-zinc-300 bg-zinc-900/90 px-4 py-3 text-zinc-100 shadow-lg transition-shadow hover:shadow-xl"
+>
+  <button
+    type="button"
+    class="flex h-full w-full flex-col items-start justify-between gap-2 text-left cursor-pointer rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/70"
+    (click)="onTogglePopover()"
+  >
+    @if (book.getCardNumber(); as cardNo) {
+      <header class="flex w-full justify-end">
+        <span class="rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1 text-[11px] font-medium tracking-widest text-zinc-300">
+          FICHA {{ cardNo }}
+        </span>
+      </header>
     }
-  </div>
 
-  @if (callNumber()) {
-    <footer class="mt-0.5 border-t border-zinc-700 pt-3">
-      <p class="text-sm text-zinc-400">
-        <span class="font-semibold tracking-wide text-zinc-300">Sig:</span>
-        <span class="ml-1">{{ callNumber() }}</span>
-      </p>
-    </footer>
-  }
+    <div class="mt-3 flex w-full flex-1 flex-col gap-3 overflow-hidden">
+      <h2
+        class="text-sm font-semibold uppercase leading-tight tracking-wide line-clamp-3 break-words"
+        [title]="book.getTitle() || 'Sin título'"
+      >
+        {{ book.getTitle() || 'Sin título' }}
+      </h2>
+
+      @if (book.getAuthors(); as authorList) {
+        <ul class="flex max-h-20 flex-col gap-1.5 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-700">
+          @for (author of authorList; track author.getId()) {
+            <li class="flex items-center gap-2 text-sm font-medium tracking-wide text-zinc-200" [title]="author.getName()">
+              <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span>
+              <span class="truncate">{{ author.getName() }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    @if (book.getCallNumber(); as callNumber) {
+      <footer class="mt-0.5 w-full border-t border-zinc-700 pt-3">
+        <p class="text-sm text-zinc-400 break-words" [title]="callNumber">
+          <span class="font-semibold tracking-wide text-zinc-300">Sig:</span>
+          <span class="ml-1">{{ callNumber }}</span>
+        </p>
+      </footer>
+    }
   </button>
 </article>
