@@ -8,11 +8,20 @@
 
         </main>
 
-        @if (selectedBook) {
+        @if (selectedBook && !editingBook) {
             <details-book-component
                 class="absolute inset-0 z-10 flex items-center justify-center bg-[#222222]/50 backdrop-blur-sm"
                 [book]="selectedBook"
+                (edit)="onEditBook($event)"
                 (close)="onCloseDetails()"
+            />
+        }
+
+        @if (editingBook) {
+            <edit-book-component
+                class="absolute inset-0 z-10 flex items-center justify-center bg-[#222222]/50 backdrop-blur-sm"
+                [book]="editingBook"
+                (close)="onCloseEdit()"
             />
         }
 </section>

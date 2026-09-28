@@ -5,6 +5,7 @@ import { Book } from '../model/book/book.model';
 import { BookModel } from '../model/book/book.model.database';
 import { BookRepository } from '../model/book/book.repository';
 import { NewBook } from '../model/book/newBook.model';
+import { NewAuthor } from '../model/author/newAuthor.model';
 import { DomainError, PersistenceError } from '../../../core/error/domain.error';
 import { DATABASE_CLIENT, DatabaseClient } from '../../../core/database/databaseClient.service';
 import { BookMapper } from '../mapper/book.mapper';
@@ -16,8 +17,12 @@ export class IBookRepository implements BookRepository {
   private databaseClient = inject<DatabaseClient>(DATABASE_CLIENT);
   private authorRepository = inject<AuthorRepository>(AUTHOR_REPOSITORY);
 
-  async save(book: NewBook): Promise<Book> {
+  async save(book: NewBook | Book): Promise<Book> {
     try {
+      if (book instanceof Book) {
+        return await this.updateBook(book);
+      }
+
       const authors = new Map<string, Author>();
 
       for (const newAuthor of book.authors) {
@@ -36,6 +41,55 @@ export class IBookRepository implements BookRepository {
       if (error instanceof DomainError) throw error;
       throw new PersistenceError('No se pudo guardar el libro.', error);
     }
+  }
+
+  private async updateBook(book: Book): Promise<Book> {
+    const authors = new Map<string, Author>();
+
+    for (const currentAuthor of book.authors ?? []) {
+      const author = await this.authorRepository.save(NewAuthor.create(currentAuthor.name));
+      authors.set(author.standardizedName, author);
+    }
+
+    const rows: BookModel[] = await this.databaseClient.select(
+      `UPDATE libros SET
+        numero_tarjeta = ?,
+        signatura_topografica = ?,
+        categoria_dewey = ?,
+        ejemplares = ?,
+        volumen = ?,
+        titulo = ?,
+        titulo_normalizado = ?,
+        observaciones = ?
+       WHERE id = ?
+       RETURNING *;`,
+      [
+        book.cardNumber,
+        book.callNumber,
+        book.deweyCategory,
+        book.copies,
+        book.volume,
+        book.title,
+        book.titleNormalized,
+        book.observations,
+        book.id,
+      ]
+    );
+
+    if (rows.length === 0) {
+      throw new DomainError('No se encontró el libro que se desea editar.');
+    }
+
+    await this.databaseClient.execute(
+      'DELETE FROM libros_autores WHERE libro_id = ?;',
+      [book.id]
+    );
+
+    for (const author of authors.values()) {
+      await this.relateAuthor(book.id, author.id);
+    }
+
+    return BookMapper.toEntity(rows[0], [...authors.values()]);
   }
 
   async getAllBooks(): Promise<Book[]> {

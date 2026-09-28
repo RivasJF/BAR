@@ -1,4 +1,5 @@
 import { Author } from "../author/author.model";
+import { NewBook } from "./newBook.model";
 import { DeweyCategory } from "../deweyCategory.model";
 
 export class Book {
@@ -45,6 +46,29 @@ export class Book {
       authors,
       observations,
       createdAt
+    );
+  }
+
+  static fromNew(
+    newBook: NewBook,
+    id: number,
+    publicId: string,
+    authors: Author[],
+    createdAt: Date,
+  ): Book {
+    return Book.create(
+      id,
+      publicId,
+      newBook.cardNumber,
+      newBook.callNumber,
+      newBook.deweyCategory,
+      newBook.copies,
+      newBook.volume,
+      newBook.title,
+      newBook.titleNormalized,
+      authors,
+      newBook.observations,
+      createdAt,
     );
   }
 

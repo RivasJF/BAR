@@ -1,0 +1,167 @@
+<article class="relative flex min-h-88 w-full max-w-5xl flex-col border-2 border-zinc-300 bg-[#222222] px-8 py-4 text-zinc-100 shadow-md sm:px-12">
+  <header class="flex justify-end">
+      <button
+        type="button"
+        class="text-4xl font-light leading-none text-red-400"
+        aria-label="Cerrar edición"
+        (click)="onClose()"
+      >
+        ×
+      </button>
+  </header>
+
+  <form class="grid grid-cols-1 gap-x-16 gap-y-6 md:grid-cols-2" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+
+    <label class="flex flex-col gap-2 text-sm text-zinc-200">
+      <span
+          htmlFor="cardNumber"
+      >Número de Tarjeta</span>
+      <input
+          id="cardNumber"
+          formControlName="cardNumber"
+          type="number"
+          class="no-spinner h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+      @if (cardNumber.invalid && (cardNumber.dirty || cardNumber.touched)) {
+        <span class="text-xs text-red-400">{{ validationMessage(cardNumber) }}</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-2 text-sm text-zinc-200">
+      <span
+          htmlFor="title"
+      >Título</span>
+      <input
+          id="title"
+          formControlName="title"
+          type="text"
+          class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+      @if (title.invalid && (title.dirty || title.touched)) {
+        <span class="text-xs text-red-400">{{ validationMessage(title) }}</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-2 text-sm text-zinc-200">
+      <span
+          htmlFor="call_number"
+      >Signatura Topográfica</span>
+      <input
+          id="call_number"
+          formControlName="callNumber"
+          type="text"
+          class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+      @if (callNumber.invalid && (callNumber.dirty || callNumber.touched)) {
+        <span class="text-xs text-red-400">{{ validationMessage(callNumber) }}</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-2 text-sm text-zinc-200">
+      <span>Autor</span>
+      @for (authorControl of author.controls; track $index) {
+        <div formArrayName="author" class="flex items-center gap-2">
+          <div class="flex w-full flex-col gap-1">
+            <input
+                type="text"
+                [formControlName]="$index"
+                [value]="authorControl.value"
+                class="h-11 w-full rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+            @if (authorControl.invalid && (authorControl.dirty || authorControl.touched)) {
+              <span class="text-xs text-red-400">{{ validationMessage(authorControl) }}</span>
+            }
+          </div>
+          <span
+              (click)="removeAuthor($index)"
+              [class.invisible]="author.controls.length === 1"
+              class="cursor-pointer text-xs text-zinc-400">REMOVE</span>
+        </div>
+      }
+      <span
+          (click)="addAuthor()"
+          [class.invisible]="author.controls.length === MAX_AUTHORS"
+          class="material-symbols-outlined self-center text-xs text-zinc-400">add</span>
+    </label>
+
+    <label class="flex flex-col gap-2 text-sm text-zinc-200 md:max-w-xs">
+      <span>Categoría</span>
+      <select
+          formControlName="deweyCategory"
+          class="h-11 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-black outline-none">
+              <option [ngValue]="null" >---</option>
+          @for(category of categories; track category) {
+              <option
+                  [ngValue]="category.code">{{category.code+'-'+category.name }}</option>
+          }
+      </select>
+    </label>
+
+    <label class="flex flex-col gap-2 text-sm text-zinc-200">
+      <span
+          htmlFor="observations"
+      >Observaciones</span>
+      <textarea
+          id="observations"
+          formControlName="observations"
+          rows="2"
+          class="resize-none rounded-md border border-zinc-500 bg-zinc-900 px-3 py-2 text-white outline-none"></textarea>
+      @if (observations.invalid && (observations.dirty || observations.touched)) {
+        <span class="text-xs text-red-400">{{ validationMessage(observations) }}</span>
+      }
+    </label>
+
+    <div class="flex flex-col gap-2 text-sm text-zinc-200 sm:flex-row sm:gap-10">
+      <label class="flex flex-col gap-2">
+        <span
+              htmlFor="volume"
+        >Volumen</span>
+        <input
+            min="1"
+            id="volume"
+            formControlName="volume"
+            placeholder="---"
+            type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+        @if (volume.invalid && (volume.dirty || volume.touched)) {
+          <span class="text-xs text-red-400">{{ validationMessage(volume) }}</span>
+        }
+      </label>
+
+      <label class="flex flex-col gap-2">
+        <span
+            htmlFor="copies"
+        >Ejemplares</span>
+        <input
+            min="1"
+           id="copies"
+           formControlName="copies"
+            type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+        @if (copies.invalid && (copies.dirty || copies.touched)) {
+          <span class="text-xs text-red-400">{{ validationMessage(copies) }}</span>
+        }
+      </label>
+    </div>
+
+    <div class="flex flex-col gap-4 md:col-span-2 md:justify-end md:items-end">
+      @if (error()) {
+        <p class="w-full rounded-md border border-red-500 bg-red-900/40 px-3 py-2 text-sm text-red-200 md:w-auto">
+          {{ error() }}
+        </p>
+      }
+
+      @if (success()) {
+        <p class="w-full rounded-md border border-emerald-500 bg-emerald-900/40 px-3 py-2 text-sm text-emerald-200 md:w-auto">
+          Libro editado correctamente.
+        </p>
+      }
+    </div>
+
+    <footer class="flex w-full justify-between gap-8 pt-6 md:col-span-2">
+      <button type="button" class="w-32 rounded-lg border border-red-400 px-5 py-2 text-sm text-red-400" (click)="onClose()">
+        Cancelar
+      </button>
+      <button
+          [disabled]="buttonDisabled() || loading()"
+          type="submit"
+          class="h-11 w-32 cursor-pointer rounded-md border border-zinc-400 bg-zinc-800 px-8 text-sm text-zinc-100 disabled:cursor-not-allowed">
+        {{ loading() ? 'Editando...' : 'Aceptar' }}
+      </button>
+    </footer>
+  </form>
+</article>

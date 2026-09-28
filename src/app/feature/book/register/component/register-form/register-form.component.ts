@@ -32,7 +32,7 @@ export class RegisterFormComponent {
 
   registerForm = this.formBuilder.group({
     cardNumber: [null, [Validators.pattern(/^\d+$/)]],
-    callNumber: [null, [Validators.pattern(/^[A-Za-z0-9\s]+$/), Validators.maxLength(100)]],
+    callNumber: [null, [Validators.pattern(/^[A-Za-z0-9./\s]+$/), Validators.maxLength(100)]],
     deweyCategory: [null],
     copies: [1, [Validators.required, Validators.min(1)]],
     volume: [null, [Validators.min(1)]],

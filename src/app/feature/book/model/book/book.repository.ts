@@ -3,7 +3,7 @@ import { Book } from "./book.model";
 import { NewBook } from "./newBook.model";
 
 export interface BookRepository {
-  save(book: NewBook): Promise<Book>;
+  save(book: NewBook | Book): Promise<Book>;
   getAllBooks(): Promise<Book[]>;
   getBookById(id: number): Promise<Book | null>;
 }

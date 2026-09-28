@@ -1,3 +1,5 @@
+import { NewAuthor } from "./newAuthor.model";
+
 export class Author {
   private constructor(
     public readonly id: number,
@@ -13,6 +15,15 @@ export class Author {
     standardizedName: string
   ): Author {
     return new Author(id, publicId, name, standardizedName)
+  }
+
+  static fromNew(newAuthor: NewAuthor, id = 0): Author {
+    return Author.create(
+      id,
+      newAuthor.publicId,
+      newAuthor.name,
+      newAuthor.standardizedName,
+    );
   }
 
   getId(): number {
