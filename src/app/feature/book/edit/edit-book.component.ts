@@ -92,7 +92,7 @@ private resolveErrorMessage(error: unknown): string {
   if (error instanceof DomainError) {
     return error.message;
   }
-  return 'Ocurrió un error inesperado al registrar el libro.';
+  return 'Ocurrió un error inesperado al editar el libro.';
 }
 
 validationMessage(control: AbstractControl | null): string | null {

@@ -57,7 +57,10 @@
   </dl>
 
   <footer class="flex justify-between gap-8 pt-6">
-    <button type="button" class="w-32 rounded-lg border border-red-400 px-5 py-2 text-sm text-red-400">
+    <button
+        (click)="onDelete()"
+        type="button"
+        class="w-32 rounded-lg border border-red-400 px-5 py-2 text-sm text-red-400">
       Eliminar
     </button>
     <button

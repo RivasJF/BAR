@@ -108,6 +108,27 @@ export class IBookRepository implements BookRepository {
     }
   }
 
+  async delete(book: Book): Promise<void> {
+    try {
+      await this.databaseClient.execute(
+        'DELETE FROM libros_autores WHERE libro_id = ?;',
+        [book.id]
+      );
+
+      const deletedRows: Array<{ id: number }> = await this.databaseClient.select(
+        'DELETE FROM libros WHERE id = ? RETURNING id;',
+        [book.id]
+      );
+
+      if (deletedRows.length === 0) {
+        throw new DomainError('No se encontró el libro que se desea eliminar.');
+      }
+    } catch (error) {
+      if (error instanceof DomainError) throw error;
+      throw new PersistenceError('No se pudo eliminar el libro.', error);
+    }
+  }
+
   async getBookById(id: number): Promise<Book | null> {
     try {
       const bookModels: BookModel[] = await this.databaseClient.select(
