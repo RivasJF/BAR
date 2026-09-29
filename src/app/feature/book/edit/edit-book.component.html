@@ -106,9 +106,10 @@
               htmlFor="volume"
         >Volumen</span>
         <input
-            min="1"
+            min="0"
             id="volume"
             formControlName="volume"
+            (input)="setVolumeToNullWhenZero()"
             placeholder="---"
             type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
         @if (volume.invalid && (volume.dirty || volume.touched)) {

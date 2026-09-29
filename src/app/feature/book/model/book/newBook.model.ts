@@ -28,6 +28,7 @@ export class NewBook {
     observations: string | null,
     authors: string[] = [],
   ) {
+    if (volume === 0) volume = null;
     if (callNumber) callNumber = callNumber.trim();
     if (title) title = title.trim();
     if (observations) observations = observations.trim();

@@ -33,7 +33,7 @@ export class EditBookComponent implements OnInit {
     callNumber: new FormControl<string | null>(null, [Validators.pattern(/^[A-Za-z0-9./\s]+$/), Validators.maxLength(100)]),
     deweyCategory: new FormControl<typeof DEWEY_CATEGORIES[number]['code'] | null>(null),
     copies: new FormControl<number | null>(1, [Validators.required, Validators.min(1)]),
-    volume: new FormControl<number | null>(null, [Validators.min(1)]),
+    volume: new FormControl<number | null>(null, [Validators.min(0)]),
     title: new FormControl<string | null>(null, [Validators.maxLength(300)]),
     author: this.formBuilder.array([this.formBuilder.control("", Validators.maxLength(150))]),
     observations: new FormControl<string | null>(null, [Validators.maxLength(250)]),
@@ -140,6 +140,12 @@ get copies() {
 }
 get volume() {
   return this.editForm.get("volume")!;
+}
+
+setVolumeToNullWhenZero() {
+  if (this.volume.value === 0) {
+    this.volume.setValue(null, { emitEvent: false });
+  }
 }
 get title() {
   return this.editForm.get("title")!;

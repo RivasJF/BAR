@@ -22,10 +22,10 @@ export class IAuthorRepository implements AuthorRepository {
         `;
 
       const rows = await this.respository.select<AuthorModel>(query, [
-          author.publicId,
-          author.name,
-          author.standardizedName
-        ]);
+        author.publicId,
+        author.name,
+        author.standardizedName
+      ]);
 
       return AuthorMapper.toEntity(rows[0]);
     } catch (error) {
@@ -47,13 +47,32 @@ export class IAuthorRepository implements AuthorRepository {
   async getAuthorById(id: number): Promise<Author | null> {
     try {
       const author: AuthorModel[] = await this.respository.select(`SELECT * FROM autores WHERE id = ?`, [id]);
-      if(!(author.length > 0)) {
+      if (!(author.length > 0)) {
         return null;
       }
       return AuthorMapper.toEntity(author[0]);
     } catch (error) {
       if (error instanceof DomainError) throw error;
       throw new PersistenceError('No se pudo obtener el autor.', error);
+    }
+  }
+
+  async getAllAuthorsByName(name: string): Promise<Author[]> {
+    try {
+      //LIKE '%' || ? || '%' search anyway.
+      const authors: AuthorModel[] = await this.respository.select(`SELECT *
+           FROM autores
+           WHERE nombre_normalizado LIKE ? || '%'
+           ORDER BY nombre
+           LIMIT 20`,
+          [name]);
+      if (!(authors.length > 0)) {
+        return [];
+      }
+      return AuthorMapper.listToEntity(authors);
+    } catch (error) {
+      if (error instanceof DomainError) throw error;
+      throw new PersistenceError('No se pudieron obtener los autores.', error);
     }
   }
 }

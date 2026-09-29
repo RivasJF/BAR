@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { Book } from '../model/book/book.model';
 import { BOOK_REPOSITORY, BookRepository } from '../model/book/book.repository';
 import { NewBook } from '../model/book/newBook.model';
 import { DeweyCategory } from '../model/deweyCategory.model';
+import { NewAuthor } from '../model/author/newAuthor.model';
+import { AUTHOR_REPOSITORY, AuthorRepository } from '../model/author/author.repository';
+import { Author } from '../model/author/author.model';
 
 export interface RegisterBookInput {
   cardNumber: number | null;
@@ -18,6 +20,7 @@ export interface RegisterBookInput {
 @Injectable({ providedIn: 'root' })
 export class RegisterService {
   private bookRepository = inject<BookRepository>(BOOK_REPOSITORY);
+  private authorRepository = inject<AuthorRepository>(AUTHOR_REPOSITORY);
 
   async registerBook(input: RegisterBookInput) {
     const newBook = NewBook.create(
@@ -31,5 +34,10 @@ export class RegisterService {
       input.authors,
     );
     return this.bookRepository.save(newBook);
+  }
+
+  async getAuthorsByName(name: string): Promise<Author[]> {
+    const nameNormalized = NewAuthor.standardizeName(name);
+    return this.authorRepository.getAllAuthorsByName(nameNormalized);
   }
 }

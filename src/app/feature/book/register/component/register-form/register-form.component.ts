@@ -10,6 +10,7 @@ import {
 import { DEWEY_CATEGORIES } from "../../../model/deweyCategory.model";
 import { RegisterBookInput, RegisterService } from "../../register.service";
 import { DomainError, PersistenceError } from "../../../../../core/error/domain.error";
+import { Author } from "../../../model/author/author.model";
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -29,13 +30,21 @@ export class RegisterFormComponent {
 
   categories = DEWEY_CATEGORIES;
   readonly MAX_AUTHORS = 3;
+  readonly MIN_LENGTH_NAME_SEARCH_AUTHOR = 2;
+
+  readonly foundAuthors = signal<Author[]>([]);
+  readonly activeAuthorIndex = signal<number | null>(null);
+
+  get filteredAuthors(): Author[] {
+    return this.foundAuthors();
+  }
 
   registerForm = this.formBuilder.group({
     cardNumber: [null, [Validators.pattern(/^\d+$/)]],
     callNumber: [null, [Validators.pattern(/^[A-Za-z0-9./\s]+$/), Validators.maxLength(100)]],
     deweyCategory: [null],
     copies: [1, [Validators.required, Validators.min(1)]],
-    volume: [null, [Validators.min(1)]],
+    volume: [null, [Validators.min(0)]],
     title: [null, [Validators.maxLength(300)]],
     author: this.formBuilder.array([this.formBuilder.control("", Validators.maxLength(150))]),
     observations: [null, [Validators.maxLength(250)]],
@@ -49,7 +58,7 @@ export class RegisterFormComponent {
     this.volume.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        if (value === '' || value === null) {
+        if (value === '' || value === 0 || value === null) {
           this.volume.setValue(null, { emitEvent: false });
         }
       });
@@ -65,6 +74,27 @@ export class RegisterFormComponent {
     this.destroyRef.onDestroy(() => {
       if (this.successTimer) clearTimeout(this.successTimer);
     });
+  }
+
+  async searchAuthors(name: string, index: number) {
+    this.activeAuthorIndex.set(index);
+    if (!name || name.trim().length < this.MIN_LENGTH_NAME_SEARCH_AUTHOR) {
+      this.foundAuthors.set([]);
+      return;
+    }
+
+    this.foundAuthors.set(await this.registerService.getAuthorsByName(name));
+  }
+
+  selectAuthor(author: Author, index: number) {
+    this.author.at(index).setValue(author.name);
+    this.foundAuthors.set([]);
+    this.activeAuthorIndex.set(null);
+  }
+
+  activateAuthorSearch(index: number) {
+    this.activeAuthorIndex.set(index);
+    this.foundAuthors.set([]);
   }
 
   async onSubmit() {
@@ -105,6 +135,8 @@ export class RegisterFormComponent {
     });
     this.author.clear();
     this.author.push(this.formBuilder.control("", Validators.maxLength(150)));
+    this.foundAuthors.set([]);
+    this.activeAuthorIndex.set(null);
   }
 
   private showSuccess() {
@@ -164,6 +196,12 @@ export class RegisterFormComponent {
   }
   get volume() {
     return this.registerForm.get("volume")!;
+  }
+
+  setVolumeToNullWhenZero() {
+    if (this.volume.value === 0 || this.volume.value === '') {
+      this.volume.setValue(null, { emitEvent: false });
+    }
   }
   get title() {
     return this.registerForm.get("title")!;
