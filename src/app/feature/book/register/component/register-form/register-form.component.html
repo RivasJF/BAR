@@ -51,40 +51,7 @@
   <!-- Autors -->
   <label class="flex flex-col gap-2 text-sm text-zinc-200">
     <span>Autor</span>
-    @for (authorControl of author.controls; track $index; let authorIndex = $index) {
-      <div formArrayName="author" class="flex items-center gap-2">
-        <div class="relative flex w-full flex-col gap-1">
-          <input
-              type="text"
-              [formControlName]="$index"
-              [value]="authorControl.value"
-              (focus)="activateAuthorSearch(authorIndex)"
-              (input)="searchAuthors($event.target.value, authorIndex)"
-              placeholder="Ej. Gabriel García Márquez"
-              class="h-11 w-full rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
-          @if (authorControl.invalid && (authorControl.dirty || authorControl.touched)) {
-            <span class="text-xs text-red-400">{{ validationMessage(authorControl) }}</span>
-          }
-            @if (activeAuthorIndex() === authorIndex && authorControl.value && authorControl.value.length > 0 && filteredAuthors.length > 0) {
-                <ul class="absolute left-0 top-full z-10 mt-1 max-h-40 w-full overflow-y-auto rounded-md border border-zinc-500 bg-zinc-900 text-white">
-                @for (filteredAuthor of filteredAuthors; track filteredAuthor) {
-                    <li
-                        (click)="selectAuthor(filteredAuthor, authorIndex)"
-                        class="cursor-pointer px-3 py-2 hover:bg-zinc-700">{{ filteredAuthor.name }}</li>
-                }
-                </ul>
-            }
-        </div>
-        <span
-            (click)="removeAuthor($index)"
-            [class.invisible]="author.controls.length === 1"
-            class="cursor-pointer text-xs text-zinc-400">REMOVE</span>
-      </div>
-    }
-    <span
-        (click)="addAuthor()"
-        [class.invisible]="author.controls.length === MAX_AUTHORS"
-        class="material-symbols-outlined self-center text-xs text-zinc-400">add</span>
+    <register-form-author [authors]="registerForm.controls.author" />
   </label>
 
   <!-- DeweyCategoy -->
@@ -117,40 +84,10 @@
     }
   </label>
 
-  <!-- Volumen -->
-  <div class="flex flex-col gap-2 text-sm text-zinc-200 sm:flex-row sm:gap-10">
-    <label class="flex flex-col gap-2">
-      <span
-            htmlFor="volume"
-      >Volumen</span>
-      <input
-          min="0"
-          id="volume"
-          formControlName="volume"
-          (input)="setVolumeToNullWhenZero()"
-          placeholder="Ej. 1"
-          type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
-      @if (volume.invalid && (volume.dirty || volume.touched)) {
-        <span class="text-xs text-red-400">{{ validationMessage(volume) }}</span>
-      }
-    </label>
-
-    <!-- Copies -->
-    <label class="flex flex-col gap-2">
-      <span
-          htmlFor="copies"
-      >Ejemplares</span>
-      <input
-          min="1"
-         id="copies"
-         formControlName="copies"
-          placeholder="Ej. 1"
-          type="number" class="h-11 w-24 rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
-      @if (copies.invalid && (copies.dirty || copies.touched)) {
-        <span class="text-xs text-red-400">{{ validationMessage(copies) }}</span>
-      }
-    </label>
-  </div>
+  <register-form-volume-copie
+    [volume]="registerForm.controls.volume"
+    [copies]="registerForm.controls.copies"
+  />
 
 
   <div class="flex flex-col gap-4 md:justify-end md:items-end">

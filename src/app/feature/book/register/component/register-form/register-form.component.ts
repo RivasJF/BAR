@@ -1,23 +1,26 @@
-import { Component, DestroyRef, inject, signal } from "@angular/core";
+import { Component, DestroyRef, inject, signal, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
   AbstractControl,
-  FormArray,
   FormBuilder,
+  FormControl,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
 import { DEWEY_CATEGORIES } from "../../../model/deweyCategory.model";
 import { RegisterBookInput, RegisterService } from "../../register.service";
 import { DomainError, PersistenceError } from "../../../../../core/error/domain.error";
-import { Author } from "../../../model/author/author.model";
+import { RegisterFormAuthorComponent } from "./register-form-author/register-fomr-author.component";
+import { RegisterFormVolumeCopieComponent } from "./register-form-volume-copie/register-form-volume-copie.component";
 
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RegisterFormAuthorComponent, RegisterFormVolumeCopieComponent],
   selector: "register-form-component",
   templateUrl: "./register-form.component.html",
 })
 export class RegisterFormComponent {
+  @ViewChild(RegisterFormAuthorComponent) authorComponent!: RegisterFormAuthorComponent;
+
   private formBuilder = inject(FormBuilder);
   private registerService = inject(RegisterService);
   private readonly destroyRef = inject(DestroyRef);
@@ -29,16 +32,6 @@ export class RegisterFormComponent {
   private successTimer: ReturnType<typeof setTimeout> | null = null;
 
   categories = DEWEY_CATEGORIES;
-  readonly MAX_AUTHORS = 3;
-  readonly MIN_LENGTH_NAME_SEARCH_AUTHOR = 2;
-
-  readonly foundAuthors = signal<Author[]>([]);
-  readonly activeAuthorIndex = signal<number | null>(null);
-
-  get filteredAuthors(): Author[] {
-    return this.foundAuthors();
-  }
-
   registerForm = this.formBuilder.group({
     cardNumber: [null, [Validators.pattern(/^\d+$/)]],
     callNumber: [null, [Validators.pattern(/^[A-Za-z0-9./\s]+$/), Validators.maxLength(100)]],
@@ -55,14 +48,6 @@ export class RegisterFormComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.success.set(false));
 
-    this.volume.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        if (value === '' || value === 0 || value === null) {
-          this.volume.setValue(null, { emitEvent: false });
-        }
-      });
-
     this.copies.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
@@ -76,54 +61,8 @@ export class RegisterFormComponent {
     });
   }
 
-  async searchAuthors(name: string, index: number) {
-    this.activeAuthorIndex.set(index);
-    if (!name || name.trim().length < this.MIN_LENGTH_NAME_SEARCH_AUTHOR) {
-      this.foundAuthors.set([]);
-      return;
-    }
-
-    this.foundAuthors.set(await this.registerService.getAuthorsByName(name));
-  }
-
-  selectAuthor(author: Author, index: number) {
-    this.author.at(index).setValue(author.name);
-    this.foundAuthors.set([]);
-    this.activeAuthorIndex.set(null);
-  }
-
-  activateAuthorSearch(index: number) {
-    this.activeAuthorIndex.set(index);
-    this.foundAuthors.set([]);
-  }
-
-  async onSubmit() {
-    this.loading.set(true);
-    this.error.set(null);
-    this.success.set(false);
-
-    try {
-      const input: RegisterBookInput = {
-        cardNumber: this.registerForm.value.cardNumber ?? null,
-        callNumber: this.registerForm.value.callNumber ?? null,
-        deweyCategory: this.registerForm.value.deweyCategory ?? null,
-        copies: this.registerForm.value.copies ?? 1,
-        volume: this.registerForm.value.volume ?? null,
-        title: this.registerForm.value.title ?? null,
-        observations: this.registerForm.value.observations ?? null,
-        authors: this.author.value as string[],
-      };
-      await this.registerService.registerBook(input);
-      this.resetForm();
-      this.showSuccess();
-    } catch (error) {
-      this.error.set(this.resolveErrorMessage(error));
-    } finally {
-      this.loading.set(false);
-    }
-  }
-
   private resetForm() {
+    this.authorComponent.reset();
     this.registerForm.reset({
       cardNumber: null,
       callNumber: null,
@@ -133,10 +72,6 @@ export class RegisterFormComponent {
       title: null,
       observations: null,
     });
-    this.author.clear();
-    this.author.push(this.formBuilder.control("", Validators.maxLength(150)));
-    this.foundAuthors.set([]);
-    this.activeAuthorIndex.set(null);
   }
 
   private showSuccess() {
@@ -155,6 +90,32 @@ export class RegisterFormComponent {
     return 'Ocurrió un error inesperado al registrar el libro.';
   }
 
+  async onSubmit() {
+    this.loading.set(true);
+    this.error.set(null);
+    this.success.set(false);
+
+    try {
+      const input: RegisterBookInput = {
+        cardNumber: this.registerForm.value.cardNumber ?? null,
+        callNumber: this.registerForm.value.callNumber ?? null,
+        deweyCategory: this.registerForm.value.deweyCategory ?? null,
+        copies: this.registerForm.value.copies ?? 1,
+        volume: this.registerForm.value.volume ?? null,
+        title: this.registerForm.value.title ?? null,
+        observations: this.registerForm.value.observations ?? null,
+        authors: (this.registerForm.value.author ?? []) as string[],
+      };
+      await this.registerService.registerBook(input);
+      this.resetForm();
+      this.showSuccess();
+    } catch (error) {
+      this.error.set(this.resolveErrorMessage(error));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
   validationMessage(control: AbstractControl | null): string | null {
     if (!control || control.valid) return null;
     const errors = control.errors;
@@ -164,18 +125,6 @@ export class RegisterFormComponent {
     if (errors['maxlength']) return `Máximo ${errors['maxlength'].requiredLength} caracteres.`;
     if (errors['pattern']) return 'Formato inválido.';
     return 'Valor inválido.';
-  }
-
-  addAuthor() {
-    if (this.author.length < this.MAX_AUTHORS) {
-      this.author.push(this.formBuilder.control("", Validators.maxLength(150)));
-    }
-  }
-
-  removeAuthor(index: number) {
-    if (this.author.length > 1) {
-      this.author.removeAt(index);
-    }
   }
 
   buttonDisabled() {
@@ -195,19 +144,10 @@ export class RegisterFormComponent {
     return this.registerForm.get("copies")!;
   }
   get volume() {
-    return this.registerForm.get("volume")!;
-  }
-
-  setVolumeToNullWhenZero() {
-    if (this.volume.value === 0 || this.volume.value === '') {
-      this.volume.setValue(null, { emitEvent: false });
-    }
+    return this.registerForm.get("volume") as FormControl<number | null>;
   }
   get title() {
     return this.registerForm.get("title")!;
-  }
-  get author() {
-    return this.registerForm.get("author") as FormArray;
   }
   get observations() {
     return this.registerForm.get("observations")!;

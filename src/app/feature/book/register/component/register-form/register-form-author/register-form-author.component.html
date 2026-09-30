@@ -1,0 +1,47 @@
+<div class="flex flex-col gap-2">
+  @for (authorControl of authors.controls; track $index; let authorIndex = $index) {
+    <div class="flex items-center gap-2">
+      <div class="relative flex w-full flex-col gap-1">
+        <input
+          type="text"
+          [formControl]="getAuthorControl(authorIndex)"
+          (focus)="activateAuthorSearch(authorIndex)"
+          (input)="searchAuthors(authorControl.value, authorIndex)"
+          placeholder="Ej. Gabriel García Márquez"
+          class="h-11 w-full rounded-md border border-zinc-500 bg-zinc-900 px-3 text-white outline-none">
+
+        @if (authorControl.invalid && (authorControl.dirty || authorControl.touched)) {
+          <span class="text-xs text-red-400">{{ validationMessage(getAuthorControl(authorIndex)) }}</span>
+        }
+
+        @if (activeAuthorIndex() === authorIndex && authorControl.value && foundAuthors().length > 0) {
+          <ul class="absolute left-0 top-full z-10 mt-1 max-h-40 w-full overflow-y-auto rounded-md border border-zinc-500 bg-zinc-900 text-white">
+            @for (foundAuthor of foundAuthors(); track foundAuthor.getId()) {
+              <li
+                (click)="selectAuthor(foundAuthor, authorIndex)"
+                class="cursor-pointer px-3 py-2 hover:bg-zinc-700">
+                {{ foundAuthor.getName() }}
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <button
+        type="button"
+        (click)="removeAuthor(authorIndex)"
+        [class.invisible]="authors.length === 1"
+        class="cursor-pointer text-xs text-zinc-400">
+        REMOVE
+      </button>
+    </div>
+  }
+
+  <button
+    type="button"
+    (click)="addAuthor()"
+    [class.invisible]="authors.length === MAX_AUTHORS"
+    class="material-symbols-outlined self-center text-xs text-zinc-400">
+    add
+  </button>
+</div>
