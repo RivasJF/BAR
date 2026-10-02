@@ -1,6 +1,8 @@
 <header class="h-10 flex items-center justify-center gap-2 px-4 ">
-  <span class="text-lg">📚</span>
-  <span class="font-bold text-sm text-amber-500">Biblioteca Alfonso Reyes</span>
+    <span class="material-symbols-outlined">
+    auto_stories
+    </span>
+  <span class="font-bold text-sm ">Biblioteca Alfonso Reyes</span>
 </header>
 <hr class="w-[95%] mx-auto border-white my-0">
 
@@ -8,7 +10,10 @@
   <aside class="absolute top-0 left-0 z-50 h-full w-12 overflow-hidden border-r border-white bg-[#222222] p-2 transition-all duration-200 group hover:w-48">
       @for( route of routes; track route.name){
           <a [routerLink]="route.route" class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 text-sm whitespace-nowrap">
-            <span class="text-base">{{route.icon}}</span>
+              <span
+                class="material-symbols-outlined"
+                [class]="route.color"
+              >{{ route.icon }}</span>
             <span class="opacity-0 group-hover:opacity-100 transition-opacity">{{route.label}}</span>
           </a>
       }
