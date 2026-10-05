@@ -1,0 +1,22 @@
+<div class="relative flex shrink-0 items-center border-r border-zinc-700 pr-2">
+    <select
+        [formControl]="control"
+        aria-label="Campo de búsqueda"
+        class="cursor-pointer appearance-none bg-transparent pr-5 text-sm font-medium text-gray-300 focus:outline-none"
+    >
+        @for (option of options; track option.lable){
+            <option [value]="option.value" class="bg-zinc-900 text-white">{{option.lable}}:</option>
+        }
+    </select>
+    <!-- Flecha desplegable -->
+    <span class="material-symbols-outlined absolute right-0 pointer-events-none text-gray-400">
+    keyboard_arrow_down
+    </span>
+</div>
+
+<input
+    type="text"
+    [formControl]="searchControl"
+    placeholder="Buscar..."
+    class="flex-1 bg-transparent px-3 py-1 text-sm text-white placeholder-gray-500 focus:outline-none"
+>
