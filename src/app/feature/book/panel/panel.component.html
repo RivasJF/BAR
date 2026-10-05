@@ -1,9 +1,9 @@
-<section class="relative h-full w-full flex-1 flex-col overflow-hidden  bg-zinc-900/40 shadow-lg">
-    <header class="flex items-center justify-center gap-4 py-2 px-2">
+<section class="relative flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-zinc-900/40 shadow-lg">
+    <header class="flex shrink-0 items-center justify-center gap-4 px-2 py-2">
             <panel-search-component />
     </header>
 
-        <main class="flex-1 mt-4 border border-zinc-700 rounded-xl bg-zinc-900/40 p-6 relative flex flex-col gap-4 overflow-y-auto">
+        <main class="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-xl border border-zinc-700 bg-zinc-900/40 p-6">
             <panel-content-component (bookSelected)="onBookSelected($event)" />
 
         </main>

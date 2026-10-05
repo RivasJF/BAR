@@ -1,4 +1,4 @@
-<div class="grid w-full h-full content-start justify-center gap-4 grid-cols-[repeat(auto-fill,12rem)] grid-auto-rows-[12rem]">
+<div class="grid min-h-full w-full content-start justify-center gap-4 grid-cols-[repeat(auto-fill,12rem)] auto-rows-[12rem]">
     @for(book of books(); track book.getId()) {
     <target-book-component
         [book]="book"

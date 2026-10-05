@@ -7,7 +7,10 @@ import { DomainError, PersistenceError } from '../../../../../core/error/domain.
 @Component({
   imports: [TargetBookComponent],
   selector: 'panel-content-component',
-  templateUrl: './panel-content.component.html'
+  templateUrl: './panel-content.component.html',
+  host: {
+    class: 'block w-full shrink-0',
+  },
 })
 export class PanelContentComponent {
   private panelService = inject(PanelService);

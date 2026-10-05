@@ -6,7 +6,7 @@
 </header>
 <hr class="w-[95%] mx-auto border-white my-0">
 
-<div class="relative flex h-[calc(100vh-2.5rem)]">
+<div class="relative flex h-[calc(100vh-2.5rem)] min-h-0">
   <aside class="absolute top-0 left-0 z-50 h-full w-12 overflow-hidden border-r border-white bg-[#222222] p-2 transition-all duration-200 group hover:w-48">
       @for( route of routes; track route.name){
           <a [routerLink]="route.route" class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 text-sm whitespace-nowrap">
@@ -19,7 +19,7 @@
       }
   </aside>
 
-  <main class="relative z-0 flex-1 w-full overflow-auto pt-4 pr-4 pb-4 pl-16">
+  <main class="relative z-0 flex min-h-0 flex-1 w-full overflow-hidden pt-4 pr-4 pb-4 pl-16">
     <router-outlet />
   </main>
 </div>

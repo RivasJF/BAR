@@ -9,6 +9,9 @@ import { Book } from '../model/book/book.model';
   imports: [PanelSearchComponent, PanelContentComponent, DetailsBookComponent, EditBookComponent],
   selector: 'panel',
 	templateUrl: './panel.component.html',
+	host: {
+	  class: 'block h-full min-h-0 w-full',
+	},
 })
 export class Panel {
   selectedBook: Book | null = null;
