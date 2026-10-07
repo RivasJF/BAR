@@ -1,0 +1,65 @@
+<header class="relative flex items-center justify-center">
+    <h2 class="text-center text-sm font-medium text-gray-300">Búsqueda avanzada</h2>
+
+    <!-- <button type="button" (click)="onClose()" class="p-1 text-gray-400 hover:text-white" title="Cerrar">
+        <span class="material-symbols-outlined">close</span>
+    </button> -->
+    <close-button-component
+        class="absolute right-0 top-1/2 -translate-y-1/2"
+        (close)="onClose()"
+        title="Cerrar"
+    />
+</header>
+
+<form [formGroup]="advancedForm" (ngSubmit)="onSearchAdvanced()" class="grid gap-3 sm:grid-cols-2">
+    <!-- N. Targeta -->
+    <label class="flex flex-col gap-1">
+        <span class="text-xs text-gray-400">N. Targeta</span>
+        <input type="text" formControlName="cardNumber" placeholder="Ej. 12345"
+            class="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-zinc-500 focus:outline-none" />
+    </label>
+
+    <!-- Título -->
+    <label class="flex flex-col gap-1">
+        <span class="text-xs text-gray-400">Título</span>
+        <input type="text" formControlName="title" placeholder="Título del libro"
+            class="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-zinc-500 focus:outline-none" />
+    </label>
+
+    <!-- Autor -->
+    <label class="flex flex-col gap-1">
+        <span class="text-xs text-gray-400">Autor</span>
+        <input type="text" formControlName="author" placeholder="Apellido, Nombre"
+            class="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-zinc-500 focus:outline-none" />
+    </label>
+
+    <!-- Signatura topográfica -->
+    <label class="flex flex-col gap-1">
+        <span class="text-xs text-gray-400">Signatura topográfica</span>
+        <input type="text" formControlName="topographicSignature" placeholder="Ej. A-123"
+            class="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-zinc-500 focus:outline-none" />
+    </label>
+
+    <!-- Categoría Dewey -->
+    <label class="flex flex-col gap-1">
+        <span class="text-xs text-gray-400">Categoría Dewey</span>
+        <input type="text" formControlName="deweyCategory" placeholder="Ej. 005.74"
+            class="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-zinc-500 focus:outline-none" />
+    </label>
+
+    <!-- Edición -->
+    <label class="flex flex-col gap-1">
+        <span class="text-xs text-gray-400">Edición</span>
+        <input type="text" formControlName="edition" placeholder="Ej. 2ª ed."
+            class="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-zinc-500 focus:outline-none" />
+    </label>
+
+    <div class="col-span-full flex items-center justify-end gap-2 pt-2">
+        <button type="button" (click)="onClear()" class="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-gray-300 hover:bg-zinc-800">
+            Limpiar
+        </button>
+        <button type="submit" class="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-gray-200">
+            Buscar
+        </button>
+    </div>
+</form>

@@ -19,9 +19,19 @@
     </button>
 </form>
 
-<!-- Botón Derecha (Ajustes / Filtro / Acción) -->
-<button class="p-2 border border-zinc-700 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-gray-300 transition-colors flex items-center justify-center shrink-0" title="Opciones">
+<!-- Advanced Search -->
+<button
+    type="button"
+    (click)="toggleAdvanced()"
+    class="p-2 border border-zinc-700 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-gray-300 transition-colors flex items-center justify-center shrink-0"
+    title="Búsqueda avanzada">
     <span class="material-symbols-outlined">
     discover_tune
     </span>
 </button>
+
+@if (isAdvancedOpen()) {
+    <panel-search-advanced
+        (searchAdvanced)="onAdvancedSearch($event)"
+        (close)="closeAdvanced()" />
+}
