@@ -1,8 +1,8 @@
 import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { TargetBookComponent } from '../target-book/target-book.component';
 import { Book } from '../../../model/book/book.model';
-import { PanelService } from '../../panel.service';
 import { DomainError, PersistenceError } from '../../../../../core/error/domain.error';
+import { PanelService } from '../../panel.service';
 
 @Component({
   imports: [TargetBookComponent],
@@ -24,11 +24,15 @@ export class PanelContentComponent {
   readonly success = signal<boolean>(false);
 
   async ngOnInit() {
+    await this.loadBooks();
+  }
+
+  async loadBooks(booksPromise: Promise<Book[]> = this.panelService.fetchAllBooks()): Promise<void> {
     this.loading.set(true);
     this.error.set(null);
     this.success.set(false);
     try {
-      this.books.set(await this.panelService.fetchAllBooks());
+      this.books.set(await booksPromise);
     } catch (error) {
       this.error.set(this.resolveErrorMessage(error));
     } finally {

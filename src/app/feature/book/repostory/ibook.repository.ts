@@ -3,7 +3,11 @@ import { Author } from '../model/author/author.model';
 import { AUTHOR_REPOSITORY, AuthorRepository } from '../model/author/author.repository';
 import { Book } from '../model/book/book.model';
 import { BookModel } from '../model/book/book.model.database';
-import { BookRepository } from '../model/book/book.repository';
+import {
+  AdvancedBookSearch,
+  BookRepository,
+  BookSearchField,
+} from '../model/book/book.repository';
 import { NewBook } from '../model/book/newBook.model';
 import { NewAuthor } from '../model/author/newAuthor.model';
 import { DomainError, PersistenceError } from '../../../core/error/domain.error';
@@ -108,6 +112,67 @@ export class IBookRepository implements BookRepository {
     }
   }
 
+  async searchBooks(field: BookSearchField, value: string): Promise<Book[]> {
+        const columns: Record<BookSearchField, string> = {
+          title: 'b.titulo_normalizado',
+          author: 'a.nombre_normalizado',
+          callNumber: 'b.signatura_topografica',
+          cardNumber: 'CAST(b.numero_tarjeta AS TEXT)',
+        };
+
+        const column = columns[field];
+        const normalizedValue = value.trim().toLocaleLowerCase();
+        const query = field === 'author'
+          ? `SELECT DISTINCT b.* FROM libros b
+             INNER JOIN libros_autores la ON la.libro_id = b.id
+             INNER JOIN autores a ON a.id = la.autor_id
+             WHERE ${column} LIKE ?
+             ORDER BY b.id;`
+          : `SELECT b.* FROM libros b
+             WHERE ${column} LIKE ?
+             ORDER BY b.id;`;
+
+        return this.getBooksByQuery(query, [`%${normalizedValue}%`]);
+      }
+
+  async advancedSearchBooks(criteria: AdvancedBookSearch): Promise<Book[]> {
+        const conditions: string[] = [];
+        const parameters: string[] = [];
+
+        if (criteria.cardNumber?.trim()) {
+          conditions.push('CAST(b.numero_tarjeta AS TEXT) LIKE ?');
+          parameters.push(`%${criteria.cardNumber.trim()}%`);
+        }
+        if (criteria.title?.trim()) {
+          conditions.push('b.titulo_normalizado LIKE ?');
+          parameters.push(`%${criteria.title.trim().toLocaleLowerCase()}%`);
+        }
+        if (criteria.callNumber?.trim()) {
+          conditions.push('b.signatura_topografica LIKE ?');
+          parameters.push(`%${criteria.callNumber.trim()}%`);
+        }
+        if (criteria.deweyCategory?.trim()) {
+          conditions.push('CAST(b.categoria_dewey AS TEXT) LIKE ?');
+          parameters.push(`%${criteria.deweyCategory.trim()}%`);
+        }
+
+        const author = criteria.author?.trim();
+        if (author) {
+          conditions.push(`EXISTS (
+            SELECT 1 FROM libros_autores la
+            INNER JOIN autores a ON a.id = la.autor_id
+            WHERE la.libro_id = b.id AND a.nombre_normalizado LIKE ?
+          )`);
+          parameters.push(`%${author.toLocaleLowerCase()}%`);
+        }
+
+        const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+        return this.getBooksByQuery(
+          `SELECT b.* FROM libros b ${where} ORDER BY b.id;`,
+          parameters,
+        );
+      }
+
   async delete(book: Book): Promise<void> {
     try {
       await this.databaseClient.execute(
@@ -145,6 +210,20 @@ export class IBookRepository implements BookRepository {
     } catch (error) {
       if (error instanceof DomainError) throw error;
       throw new PersistenceError('No se pudo obtener el libro.', error);
+    }
+  }
+
+  private async getBooksByQuery(
+      query: string,
+      parameters: string[],
+    ): Promise<Book[]> {
+      try {
+        const bookModels: BookModel[] = await this.databaseClient.select(query, parameters);
+        const authorsByBookId = await this.selectAuthorsGroupedByBook();
+        return BookMapper.listToEntity(bookModels, authorsByBookId);
+      } catch (error) {
+        if (error instanceof DomainError) throw error;
+        throw new PersistenceError('No se pudieron buscar los libros.', error);
     }
   }
 

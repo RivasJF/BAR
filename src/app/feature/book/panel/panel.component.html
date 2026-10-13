@@ -1,6 +1,9 @@
 <section class="relative flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-zinc-900/40 shadow-lg">
     <header class="flex shrink-0 items-center justify-center gap-4 px-2 py-2">
-            <panel-search-component />
+            <panel-search-component
+                (search)="onSearch($event)"
+                (advancedSearch)="onAdvancedSearch($event)"
+            />
     </header>
 
         <main class="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-xl border border-zinc-700 bg-zinc-900/40 p-6">

@@ -30,7 +30,7 @@ export class PanelSearchAdvancedComponent {
     cardNumber: '',
     title: '',
     author: '',
-    topographicSignature: '',
+    callNumber: '',
     deweyCategory: '',
     edition: '',
   });
